@@ -1,0 +1,13 @@
+# python bytecode and caches
+__pycache__/
+
+# virtual environments
+.venv/
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# local runtime
+.python-version

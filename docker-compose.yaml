@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    image: fastapi-blog:dev
+    container_name: python-app
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: sleep infinity
