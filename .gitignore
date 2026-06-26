@@ -9,6 +9,3 @@ __pycache__
 .env
 .env.*
 !.env.example
-
-# text files
-snippets.txt

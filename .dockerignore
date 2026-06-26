@@ -4,3 +4,6 @@ app/.ruff_cache
 
 # virtual environments
 app/.venv
+
+# text files
+app/snippets.txt
