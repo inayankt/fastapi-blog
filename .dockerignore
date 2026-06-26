@@ -1,0 +1,6 @@
+# python
+app/__pycache__
+app/.ruff_cache
+
+# virtual environments
+app/.venv

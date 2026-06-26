@@ -1,13 +1,14 @@
-# python bytecode and caches
-__pycache__/
+# python
+__pycache__
+.ruff_cache
 
 # virtual environments
-.venv/
+.venv
 
 # environment files
 .env
 .env.*
 !.env.example
 
-# local runtime
-.python-version
+# text files
+snippets.txt
