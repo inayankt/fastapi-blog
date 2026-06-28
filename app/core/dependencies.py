@@ -1,9 +1,9 @@
-from db import SessionLocal
+from db import AsyncSessionLocal
 
 
-def get_db():
-    db = SessionLocal()
+async def get_db():
+    db = AsyncSessionLocal()
     try:
         yield db
     finally:
-        db.close()
+        await db.close()

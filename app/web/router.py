@@ -14,11 +14,11 @@ router = APIRouter()
 
 
 @router.get("/", include_in_schema=False)
-def home_page(
+async def home_page(
     request: Request,
     service: Annotated[PostService, Depends(get_post_service)],
 ):
-    posts = service.list_posts()
+    posts = await service.list_posts()
     return templates.TemplateResponse(
         request, "home.html", {"posts": posts, "title": "Home"}
     )

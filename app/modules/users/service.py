@@ -12,30 +12,32 @@ class UserService:
     def __init__(self, repository: UserRepository):
         self.repo = repository
 
-    def get_user(self, user_id: int) -> User:
-        user = self.repo.get_by_id(user_id)
+    async def get_user(self, user_id: int) -> User:
+        user = await self.repo.get_by_id(user_id)
         if not user:
             raise UserNotFoundError()
         return user
 
-    def create_user(self, payload: UserCreate) -> User:
-        if self.repo.get_by_username(payload.username):
+    async def create_user(self, payload: UserCreate) -> User:
+        if await self.repo.get_by_username(payload.username):
             raise UsernameAlreadyExistsError()
 
-        if self.repo.get_by_email(payload.email):
+        if await self.repo.get_by_email(payload.email):
             raise EmailAlreadyExistsError()
 
-        return self.repo.create(payload.username, payload.email)
+        return await self.repo.create(payload.username, payload.email)
 
-    def update_user(self, user_id: int, payload: UserUpdate) -> User:
-        user = self.repo.get_by_id(user_id)
+    async def update_user(self, user_id: int, payload: UserUpdate) -> User:
+        user = await self.repo.get_by_id(user_id)
         if not user:
             raise UserNotFoundError()
 
-        if payload.username is not None and self.repo.get_by_username(payload.username):
+        if payload.username is not None and await self.repo.get_by_username(
+            payload.username
+        ):
             raise UsernameAlreadyExistsError()
 
-        if payload.email is not None and self.repo.get_by_email(payload.email):
+        if payload.email is not None and await self.repo.get_by_email(payload.email):
             raise EmailAlreadyExistsError()
 
         updated_user = self.repo.update(
@@ -46,9 +48,9 @@ class UserService:
         )
         return updated_user
 
-    def delete_user(self, user_id: int) -> None:
-        user = self.repo.get_by_id(user_id)
+    async def delete_user(self, user_id: int) -> None:
+        user = await self.repo.get_by_id(user_id)
         if not user:
             raise UserNotFoundError()
 
-        self.repo.delete(user)
+        await self.repo.delete(user)

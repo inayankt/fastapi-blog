@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import get_db
 from modules.posts.repository import PostRepository
@@ -10,6 +10,6 @@ from modules.users.repository import UserRepository
 
 
 def get_post_service(
-    db: Annotated[Session, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> PostService:
     return PostService(UserRepository(db), PostRepository(db))
