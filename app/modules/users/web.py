@@ -1,16 +1,14 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.templating import Jinja2Templates
 
+from core.templates import templates
 from modules.posts.dependencies import get_post_service
 from modules.users.dependencies import get_user_service
 from modules.posts.service import PostService
 from modules.users.service import UserService
 
 router = APIRouter(prefix="/users", tags=["posts"])
-
-templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/{user_id}/posts", include_in_schema=False)

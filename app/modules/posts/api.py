@@ -10,7 +10,7 @@ from modules.posts.service import PostService
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 
-@router.get("", response_model=list[PostResponse])
+@router.get("/", response_model=list[PostResponse])
 def get_posts(
     service: Annotated[PostService, Depends(get_post_service)],
 ):
@@ -25,9 +25,9 @@ def get_post(
     return service.get_post(post_id)
 
 
-@router.post("", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
 def create_post(
     payload: PostCreate,
     service: Annotated[PostService, Depends(get_post_service)],
 ):
-    return service.get_posts_by_user(payload)
+    return service.create_post(payload)

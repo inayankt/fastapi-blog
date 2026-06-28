@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 
+from core.templates import templates
 from modules.users.web import router as users_router
 from modules.posts.web import router as posts_router
 from modules.posts.service import PostService
@@ -10,8 +11,6 @@ from modules.posts.dependencies import get_post_service
 
 
 router = APIRouter()
-
-templates = Jinja2Templates(directory="templates")
 
 @router.get("/", include_in_schema=False)
 def home_page(

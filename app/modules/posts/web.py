@@ -1,15 +1,13 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.templating import Jinja2Templates
 
+from core.templates import templates
 from modules.posts.dependencies import get_post_service
 from modules.posts.service import PostService
 
 
 router = APIRouter(prefix="/posts", tags=["posts"])
-
-templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", include_in_schema=False)

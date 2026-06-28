@@ -2,10 +2,10 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from db import Base, engine
+from core.templates import templates
 from web.router import router as web_router
 from api.router import router as api_router
 
@@ -16,8 +16,6 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/media", StaticFiles(directory="media"), name="media")
-
-templates = Jinja2Templates(directory="templates")
 
 
 app.include_router(web_router)
