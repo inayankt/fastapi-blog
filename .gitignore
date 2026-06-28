@@ -1,3 +1,9 @@
+# user uploaded files
+media
+
+# local database
+*.db
+
 # python
 __pycache__
 .ruff_cache
