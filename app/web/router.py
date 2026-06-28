@@ -12,6 +12,7 @@ from modules.posts.dependencies import get_post_service
 
 router = APIRouter()
 
+
 @router.get("/", include_in_schema=False)
 def home_page(
     request: Request,
@@ -19,10 +20,9 @@ def home_page(
 ):
     posts = service.list_posts()
     return templates.TemplateResponse(
-        request,
-        "home.html",
-        {"posts": posts, "title": "Home"}
+        request, "home.html", {"posts": posts, "title": "Home"}
     )
+
 
 router.include_router(users_router)
 router.include_router(posts_router)

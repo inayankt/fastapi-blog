@@ -17,10 +17,9 @@ def posts_page(
 ):
     posts = service.list_posts()
     return templates.TemplateResponse(
-        request,
-        "home.html",
-        {"posts": posts, "title": "Home"}
+        request, "home.html", {"posts": posts, "title": "Home"}
     )
+
 
 @router.get("/{post_id}", include_in_schema=False)
 def post_page(

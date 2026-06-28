@@ -9,21 +9,15 @@ class PostRepository:
         self.db = db
 
     def get_all(self) -> list[Post]:
-        result = self.db.execute(
-            select(Post)
-        )
+        result = self.db.execute(select(Post))
         return list(result.scalars().all())
 
     def get_by_id(self, post_id: int) -> Post | None:
-        result = self.db.execute(
-            select(Post).where(Post.id == post_id)
-        )
+        result = self.db.execute(select(Post).where(Post.id == post_id))
         return result.scalars().first()
 
     def get_by_user_id(self, user_id: int) -> list[Post]:
-        result = self.db.execute(
-            select(Post).where(Post.user_id == user_id)
-        )
+        result = self.db.execute(select(Post).where(Post.user_id == user_id))
         return list(result.scalars().all())
 
     def create(self, title: str, content: str, user_id: int) -> Post:
@@ -32,3 +26,21 @@ class PostRepository:
         self.db.commit()
         self.db.refresh(new_post)
         return new_post
+
+    def update(
+        self,
+        post: Post,
+        title: str | None = None,
+        content: str | None = None,
+    ) -> Post:
+        if title is not None:
+            post.title = title
+        if content is not None:
+            post.content = content
+        self.db.commit()
+        self.db.refresh(post)
+        return post
+
+    def delete(self, post: Post) -> None:
+        self.db.delete(post)
+        self.db.commit()

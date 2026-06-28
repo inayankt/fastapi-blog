@@ -25,7 +25,10 @@ app.include_router(api_router)
 # StarletteHTTPException handler
 @app.exception_handler(StarletteHTTPException)
 def general_http_exception_handler(request: Request, exception: StarletteHTTPException):
-    message = exception.detail or "An error occurred. Please check your request and try again."
+    message = (
+        exception.detail
+        or "An error occurred. Please check your request and try again."
+    )
 
     if request.url.path.startswith("/api"):
         return JSONResponse(
