@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+
 {% block content %}
   <h1 class="mb-4">Posts by {{ user.username }}</h1>
   {% for post in posts %}
@@ -9,7 +10,7 @@
              alt="{{ post.author.username }}'s profile picture"
              width="64"
              height="64"
-             loading="lazy">
+             loading="lazy" />
         <div class="flex-grow-1">
           <div class="article-metadata mb-2">
             <a class="me-2"

@@ -1,7 +1,7 @@
 from modules.users.exceptions import (
     EmailAlreadyExistsError,
-    UserNotFoundError,
     UsernameAlreadyExistsError,
+    UserNotFoundError,
 )
 from modules.users.models import User
 from modules.users.repository import UserRepository

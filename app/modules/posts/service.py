@@ -1,9 +1,9 @@
+from modules.posts.exceptions import PostNotFoundError
+from modules.posts.models import Post
 from modules.posts.repository import PostRepository
 from modules.posts.schemas import PostCreate, PostUpdate
-from modules.posts.exceptions import PostNotFoundError
-from modules.users.repository import UserRepository
 from modules.users.exceptions import UserNotFoundError
-from modules.posts.models import Post
+from modules.users.repository import UserRepository
 
 
 class PostService:

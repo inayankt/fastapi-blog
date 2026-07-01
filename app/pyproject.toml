@@ -12,6 +12,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "djlint>=1.40.0",
+    "poethepoet>=0.47.0",
     "ruff>=0.15.20",
 ]
 
@@ -31,3 +33,25 @@ select = [
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.djlint]
+profile = "jinja"
+indent = 2
+max_line_length = 100
+format_css = true
+format_js = true
+close_void_tags = true
+blank_line_after_tag = "extends,load,include"
+ignore = "H006,H031"
+
+[tool.poe.tasks]
+format-html = "djlint templates --reformat"
+lint-html = "djlint templates --lint"
+check-html = "djlint templates --check"
+lint-python = "ruff check . --fix"
+format-python = "ruff format ."
+format = [
+    "format-html",
+    "format-python",
+    "lint-python"
+]

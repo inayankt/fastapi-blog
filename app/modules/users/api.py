@@ -2,13 +2,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
+from modules.posts.dependencies import get_post_service
+from modules.posts.schemas import PostResponse
+from modules.posts.service import PostService
 from modules.users.dependencies import get_user_service
 from modules.users.schemas import UserCreate, UserResponse, UserUpdate
 from modules.users.service import UserService
-from modules.posts.service import PostService
-from modules.posts.schemas import PostResponse
-from modules.posts.dependencies import get_post_service
-
 
 router = APIRouter()
 

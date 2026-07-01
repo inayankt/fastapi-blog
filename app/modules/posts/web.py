@@ -6,7 +6,6 @@ from core.templates import templates
 from modules.posts.dependencies import get_post_service
 from modules.posts.service import PostService
 
-
 router = APIRouter()
 
 

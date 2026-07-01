@@ -1,6 +1,6 @@
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from modules.posts.models import Post
 
@@ -10,7 +10,11 @@ class PostRepository:
         self.db = db
 
     async def get_all(self) -> list[Post]:
-        result = await self.db.execute(select(Post).options(selectinload(Post.author)))
+        result = await self.db.execute(
+            select(Post)
+            .options(selectinload(Post.author))
+            .order_by(Post.date_posted.desc())
+        )
         return list(result.scalars().all())
 
     async def get_by_id(self, post_id: int) -> Post | None:
@@ -24,6 +28,7 @@ class PostRepository:
             select(Post)
             .options(selectinload(Post.author))
             .where(Post.user_id == user_id)
+            .order_by(Post.date_posted.desc())
         )
         return list(result.scalars().all())
 

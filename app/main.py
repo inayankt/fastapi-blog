@@ -1,18 +1,18 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
-from fastapi.exceptions import RequestValidationError
-from fastapi.staticfiles import StaticFiles
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
+from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from db import Base, engine
-from core.templates import templates
-from web.router import router as web_router
 from api.router import router as api_router
+from core.templates import templates
+from db import Base, engine
+from web.router import router as web_router
 
 
 @asynccontextmanager

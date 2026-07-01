@@ -1,14 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Request, Depends
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Depends, Request
 
 from core.templates import templates
-from modules.users.web import router as users_router
-from modules.posts.web import router as posts_router
-from modules.posts.service import PostService
 from modules.posts.dependencies import get_post_service
-
+from modules.posts.service import PostService
+from modules.posts.web import router as posts_router
+from modules.users.web import router as users_router
 
 router = APIRouter()
 
