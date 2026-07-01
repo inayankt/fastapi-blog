@@ -1,9 +1,8 @@
 from datetime import timedelta
 
-from auth import create_access_token, verify_access_token, verify_password
+from auth import create_access_token, verify_password
 from config import settings
-from modules.auth.exceptions import InvalidCredentialsError, InvalidTokenError
-from modules.users.models import User
+from modules.auth.exceptions import InvalidCredentialsError
 from modules.users.repository import UserRepository
 
 
@@ -22,19 +21,3 @@ class AuthService:
             data={"sub": str(user.id)}, expires_delta=access_token_expires
         )
         return {"access_token": access_token, "token_type": "bearer"}
-
-    async def get_current_user(self, token: str) -> User:
-        user_id = verify_access_token(token)
-        if not user_id:
-            raise InvalidTokenError()
-
-        try:
-            user_id_int = int(user_id)
-        except (TypeError, ValueError):
-            raise InvalidTokenError() from None
-
-        user = await self.repo.get_by_id(user_id_int)
-        if not user:
-            raise InvalidCredentialsError("User not found")
-
-        return user

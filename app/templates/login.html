@@ -39,7 +39,7 @@
 
           try {
               // OAuth2PasswordRequestForm expects form data, not JSON
-              const response = await fetch('/api/users/token', {
+              const response = await fetch('/api/auth/token', {
                   method: 'POST',
                   body: formData,
               });

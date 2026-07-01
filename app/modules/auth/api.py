@@ -3,11 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from auth import oauth2_scheme
-from modules.auth.dependencies import get_auth_service
+from modules.auth.dependencies import get_auth_service, get_current_user
 from modules.auth.schemas import Token
 from modules.auth.service import AuthService
-from modules.users.schemas import UserPublic
+from modules.users.models import User
+from modules.users.schemas import UserPrivate
 
 router = APIRouter()
 
@@ -20,9 +20,6 @@ async def login(
     return await service.login(form_data.username, form_data.password)
 
 
-@router.get("/me", response_model=UserPublic)
-async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
-    service: Annotated[AuthService, Depends(get_auth_service)],
-):
-    return await service.get_current_user(token)
+@router.get("/me", response_model=UserPrivate)
+async def get_me(user: Annotated[User, Depends(get_current_user)]):
+    return user
