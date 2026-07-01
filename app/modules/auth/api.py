@@ -21,5 +21,5 @@ async def login(
 
 
 @router.get("/me", response_model=UserPrivate)
-async def get_me(user: Annotated[User, Depends(get_current_user)]):
-    return user
+async def get_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user

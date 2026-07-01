@@ -5,7 +5,7 @@ from core.templates import templates
 router = APIRouter()
 
 
-@router.get("/login", include_in_schema=False)
+@router.get("/login")
 async def login_page(request: Request):
     return templates.TemplateResponse(
         request,
@@ -14,10 +14,19 @@ async def login_page(request: Request):
     )
 
 
-@router.get("/register", include_in_schema=False)
+@router.get("/register")
 async def register_page(request: Request):
     return templates.TemplateResponse(
         request,
         "register.html",
         {"title": "Register"},
+    )
+
+
+@router.get("/account")
+async def account_page(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "account.html",
+        {"title": "Account"},
     )

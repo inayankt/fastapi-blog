@@ -3,6 +3,7 @@ from modules.posts.models import Post
 from modules.posts.repository import PostRepository
 from modules.posts.schemas import PostCreate, PostUpdate
 from modules.users.exceptions import UserNotFoundError
+from modules.users.models import User
 from modules.users.repository import UserRepository
 
 
@@ -30,23 +31,15 @@ class PostService:
         posts = await self.post_repo.get_by_user_id(user_id)
         return user, posts
 
-    async def create_post(self, payload: PostCreate) -> Post:
-        user = await self.user_repo.get_by_id(payload.user_id)
-        if not user:
-            raise UserNotFoundError()
-
+    async def create_post(self, user: User, payload: PostCreate) -> Post:
         new_post = await self.post_repo.create(
             title=payload.title,
             content=payload.content,
-            user_id=payload.user_id,
+            user_id=user.id,
         )
         return new_post
 
-    async def update_post(self, post_id: int, payload: PostUpdate) -> Post:
-        post = await self.post_repo.get_by_id(post_id)
-        if not post:
-            raise PostNotFoundError()
-
+    async def update_post(self, post: Post, payload: PostUpdate) -> Post:
         updated_post = await self.post_repo.update(
             post=post,
             title=payload.title,
@@ -54,9 +47,5 @@ class PostService:
         )
         return updated_post
 
-    async def delete_post(self, post_id: int) -> None:
-        post = await self.post_repo.get_by_id(post_id)
-        if not post:
-            raise PostNotFoundError()
-
+    async def delete_post(self, post: Post) -> None:
         await self.post_repo.delete(post)

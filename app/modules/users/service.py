@@ -30,17 +30,19 @@ class UserService:
             payload.username, payload.email, hash_password(payload.password)
         )
 
-    async def update_user(self, user_id: int, payload: UserUpdate) -> User:
-        user = await self.repo.get_by_id(user_id)
-        if not user:
-            raise UserNotFoundError()
-
-        if payload.username is not None and await self.repo.get_by_username(
-            payload.username
+    async def update_user(self, user: User, payload: UserUpdate) -> User:
+        if (
+            payload.username is not None
+            and payload.username.lower() != user.username.lower()
+            and await self.repo.get_by_username(payload.username)
         ):
             raise UsernameAlreadyExistsError()
 
-        if payload.email is not None and await self.repo.get_by_email(payload.email):
+        if (
+            payload.email is not None
+            and payload.email.lower() != user.email.lower()
+            and await self.repo.get_by_email(payload.email)
+        ):
             raise EmailAlreadyExistsError()
 
         updated_user = await self.repo.update(
@@ -51,9 +53,5 @@ class UserService:
         )
         return updated_user
 
-    async def delete_user(self, user_id: int) -> None:
-        user = await self.repo.get_by_id(user_id)
-        if not user:
-            raise UserNotFoundError()
-
+    async def delete_user(self, user: User) -> None:
         await self.repo.delete(user)

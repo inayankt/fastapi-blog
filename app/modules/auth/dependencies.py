@@ -3,12 +3,17 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth import oauth2_scheme, verify_access_token
+from auth import oauth2_scheme
 from core.dependencies import get_db
-from modules.auth.exceptions import InvalidCredentialsError, InvalidTokenError
+from core.exceptions import ForbiddenError
 from modules.auth.service import AuthService
+from modules.posts.dependencies import get_post_service
+from modules.posts.models import Post
+from modules.posts.service import PostService
+from modules.users.dependencies import get_user_service
 from modules.users.models import User
 from modules.users.repository import UserRepository
+from modules.users.service import UserService
 
 
 def get_auth_service(
@@ -19,20 +24,28 @@ def get_auth_service(
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> User:
-    user_id = verify_access_token(token)
-    if not user_id:
-        raise InvalidTokenError()
+    return await service.get_current_user(token)
 
-    try:
-        user_id_int = int(user_id)
-    except (TypeError, ValueError):
-        raise InvalidTokenError() from None
 
-    user_repo = UserRepository(db)
-    user = await user_repo.get_by_id(user_id_int)
-    if not user:
-        raise InvalidCredentialsError("User not found")
+async def is_post_owner(
+    post_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
+    post_service: Annotated[PostService, Depends(get_post_service)],
+) -> Post:
+    post = await post_service.get_post(post_id)
+    if post.user_id != current_user.id:
+        raise ForbiddenError("Not authorized to alter this post")
+    return post
 
+
+async def is_valid_current_user(
+    user_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
+    user_service: Annotated[UserService, Depends(get_user_service)],
+) -> User:
+    user = await user_service.get_user(user_id)
+    if user.id != current_user.id:
+        raise ForbiddenError("Not authorized to alter this user")
     return user

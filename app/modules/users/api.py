@@ -2,10 +2,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
+from modules.auth.dependencies import is_valid_current_user
 from modules.posts.dependencies import get_post_service
 from modules.posts.schemas import PostResponse
 from modules.posts.service import PostService
 from modules.users.dependencies import get_user_service
+from modules.users.models import User
 from modules.users.schemas import UserCreate, UserPrivate, UserPublic, UserUpdate
 from modules.users.service import UserService
 
@@ -39,16 +41,16 @@ async def get_user_posts(
 
 @router.patch("/{user_id}", response_model=UserPrivate)
 async def update_user(
-    user_id: int,
     payload: UserUpdate,
+    user: Annotated[User, Depends(is_valid_current_user)],
     service: Annotated[UserService, Depends(get_user_service)],
 ):
-    return await service.update_user(user_id, payload)
+    return await service.update_user(user, payload)
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
-    user_id: int,
+    user: Annotated[User, Depends(is_valid_current_user)],
     service: Annotated[UserService, Depends(get_user_service)],
 ):
-    return await service.delete_user(user_id)
+    return await service.delete_user(user)
