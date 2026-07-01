@@ -40,7 +40,7 @@ class UserService:
         if payload.email is not None and await self.repo.get_by_email(payload.email):
             raise EmailAlreadyExistsError()
 
-        updated_user = self.repo.update(
+        updated_user = await self.repo.update(
             user=user,
             username=payload.username,
             email=payload.email,

@@ -7,10 +7,10 @@ from modules.posts.dependencies import get_post_service
 from modules.posts.service import PostService
 
 
-router = APIRouter(prefix="/posts", tags=["posts"])
+router = APIRouter()
 
 
-@router.get("/", include_in_schema=False)
+@router.get("")
 async def posts_page(
     request: Request,
     service: Annotated[PostService, Depends(get_post_service)],
@@ -21,7 +21,7 @@ async def posts_page(
     )
 
 
-@router.get("/{post_id}", include_in_schema=False)
+@router.get("/{post_id}")
 async def post_page(
     request: Request,
     post_id: int,

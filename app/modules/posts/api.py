@@ -7,10 +7,10 @@ from modules.posts.schemas import PostCreate, PostResponse, PostUpdate
 from modules.posts.service import PostService
 
 
-router = APIRouter(prefix="/posts", tags=["posts"])
+router = APIRouter()
 
 
-@router.get("/", response_model=list[PostResponse])
+@router.get("", response_model=list[PostResponse])
 async def get_posts(
     service: Annotated[PostService, Depends(get_post_service)],
 ):
@@ -25,7 +25,7 @@ async def get_post(
     return await service.get_post(post_id)
 
 
-@router.post("/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
 async def create_post(
     payload: PostCreate,
     service: Annotated[PostService, Depends(get_post_service)],

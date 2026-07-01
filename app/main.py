@@ -31,8 +31,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
 
-app.include_router(web_router)
-app.include_router(api_router)
+app.include_router(web_router, include_in_schema=False)
+app.include_router(api_router, prefix="/api")
 
 
 # StarletteHTTPException handler

@@ -10,10 +10,10 @@ from modules.posts.schemas import PostResponse
 from modules.posts.dependencies import get_post_service
 
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter()
 
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     payload: UserCreate,
     service: Annotated[UserService, Depends(get_user_service)],

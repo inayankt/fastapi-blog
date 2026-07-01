@@ -13,7 +13,7 @@ from modules.posts.dependencies import get_post_service
 router = APIRouter()
 
 
-@router.get("/", include_in_schema=False)
+@router.get("/")
 async def home_page(
     request: Request,
     service: Annotated[PostService, Depends(get_post_service)],
@@ -24,5 +24,5 @@ async def home_page(
     )
 
 
-router.include_router(users_router)
-router.include_router(posts_router)
+router.include_router(users_router, prefix="/users", tags=["users"])
+router.include_router(posts_router, prefix="/posts", tags=["posts"])

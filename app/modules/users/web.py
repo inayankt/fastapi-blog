@@ -6,10 +6,10 @@ from core.templates import templates
 from modules.posts.dependencies import get_post_service
 from modules.posts.service import PostService
 
-router = APIRouter(prefix="/users", tags=["posts"])
+router = APIRouter()
 
 
-@router.get("/{user_id}/posts", include_in_schema=False)
+@router.get("/{user_id}/posts")
 async def user_posts_page(
     request: Request,
     user_id: int,
