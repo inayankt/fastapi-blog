@@ -6,13 +6,13 @@ from modules.posts.dependencies import get_post_service
 from modules.posts.schemas import PostResponse
 from modules.posts.service import PostService
 from modules.users.dependencies import get_user_service
-from modules.users.schemas import UserCreate, UserResponse, UserUpdate
+from modules.users.schemas import UserCreate, UserPrivate, UserPublic, UserUpdate
 from modules.users.service import UserService
 
 router = APIRouter()
 
 
-@router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=UserPrivate, status_code=status.HTTP_201_CREATED)
 async def create_user(
     payload: UserCreate,
     service: Annotated[UserService, Depends(get_user_service)],
@@ -20,7 +20,7 @@ async def create_user(
     return await service.create_user(payload)
 
 
-@router.get("/{user_id}", response_model=UserResponse)
+@router.get("/{user_id}", response_model=UserPublic)
 async def get_user(
     user_id: int,
     service: Annotated[UserService, Depends(get_user_service)],
@@ -37,7 +37,7 @@ async def get_user_posts(
     return posts
 
 
-@router.patch("/{user_id}", response_model=UserResponse)
+@router.patch("/{user_id}", response_model=UserPrivate)
 async def update_user(
     user_id: int,
     payload: UserUpdate,

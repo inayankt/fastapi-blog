@@ -7,3 +7,7 @@ app/.venv
 
 # text files
 app/snippets.txt
+
+# environment files
+app/.env
+app/.env.*

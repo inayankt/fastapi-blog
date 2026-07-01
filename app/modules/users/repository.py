@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from modules.users.models import User
@@ -13,17 +13,30 @@ class UserRepository:
         return result.scalars().first()
 
     async def get_by_username(self, username: str) -> User | None:
-        result = await self.db.execute(select(User).where(User.username == username))
+        result = await self.db.execute(
+            select(User).where(func.lower(User.username) == username.lower())
+        )
         return result.scalars().first()
 
     async def get_by_email(self, email: str) -> User | None:
-        result = await self.db.execute(select(User).where(User.email == email))
+        result = await self.db.execute(
+            select(User).where(func.lower(User.email) == email.lower())
+        )
         return result.scalars().first()
 
     async def create(
-        self, username: str, email: str, image_file: str | None = None
+        self,
+        username: str,
+        email: str,
+        password_hash: str,
+        image_file: str | None = None,
     ) -> User:
-        new_user = User(username=username, email=email, image_file=image_file)
+        new_user = User(
+            username=username,
+            email=email.lower(),
+            password_hash=password_hash,
+            image_file=image_file,
+        )
         self.db.add(new_user)
         await self.db.commit()
         await self.db.refresh(new_user)
@@ -39,7 +52,7 @@ class UserRepository:
         if username is not None:
             user.username = username
         if email is not None:
-            user.email = email
+            user.email = email.lower()
         if image_file is not None:
             user.image_file = image_file
         await self.db.commit()

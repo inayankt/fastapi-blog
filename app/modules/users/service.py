@@ -1,3 +1,4 @@
+from auth import hash_password
 from modules.users.exceptions import (
     EmailAlreadyExistsError,
     UsernameAlreadyExistsError,
@@ -25,7 +26,9 @@ class UserService:
         if await self.repo.get_by_email(payload.email):
             raise EmailAlreadyExistsError()
 
-        return await self.repo.create(payload.username, payload.email)
+        return await self.repo.create(
+            payload.username, payload.email, hash_password(payload.password)
+        )
 
     async def update_user(self, user_id: int, payload: UserUpdate) -> User:
         user = await self.repo.get_by_id(user_id)

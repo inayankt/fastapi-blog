@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 
 from core.templates import templates
+from modules.auth.web import router as auth_router
 from modules.posts.dependencies import get_post_service
 from modules.posts.service import PostService
 from modules.posts.web import router as posts_router
@@ -22,5 +23,6 @@ async def home_page(
     )
 
 
-router.include_router(users_router, prefix="/users", tags=["users"])
-router.include_router(posts_router, prefix="/posts", tags=["posts"])
+router.include_router(users_router, prefix="/users")
+router.include_router(posts_router, prefix="/posts")
+router.include_router(auth_router)
