@@ -1,10 +1,9 @@
 from datetime import timedelta
 
-from auth import create_access_token, verify_access_token, verify_password
-from config import settings
+from core.config import settings
+from core.security import create_access_token, verify_access_token, verify_password
 from modules.auth.exceptions import InvalidCredentialsError, InvalidTokenError
-from modules.users.models import User
-from modules.users.repository import UserRepository
+from modules.users import User, UserRepository
 
 
 class AuthService:

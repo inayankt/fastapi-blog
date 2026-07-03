@@ -1,8 +1,17 @@
-from auth import hash_password
+from fastapi import UploadFile
+from PIL import UnidentifiedImageError
+from starlette.concurrency import run_in_threadpool
+
+from core.storage import delete_profile_image, process_profile_image
+from core.security import hash_password
+from core.config import settings
 from modules.users.exceptions import (
     EmailAlreadyExistsError,
     UsernameAlreadyExistsError,
     UserNotFoundError,
+    FileTooLargeError,
+    InvalidImageError,
+    NoProfilePictureError
 )
 from modules.users.models import User
 from modules.users.repository import UserRepository
@@ -45,13 +54,48 @@ class UserService:
         ):
             raise EmailAlreadyExistsError()
 
-        updated_user = await self.repo.update(
+        updated_user = await self.repo.update_details(
             user=user,
             username=payload.username,
             email=payload.email,
-            image_file=payload.image_file,
         )
         return updated_user
 
     async def delete_user(self, user: User) -> None:
+        old_filename = user.image_file
+        
         await self.repo.delete(user)
+        
+        if old_filename:
+            delete_profile_image(old_filename)
+
+    async def upload_profile_picture(self, user: User, file: UploadFile) -> User:
+        content = await file.read()
+        if len(content) > settings.max_upload_size_bytes:
+            raise FileTooLargeError()
+        
+        try:
+            new_filename = await run_in_threadpool(process_profile_image, content)
+        except UnidentifiedImageError as err:
+            raise InvalidImageError() from err
+        
+        old_filename = user.image_file
+        
+        updated_user = await self.repo.update_image(user, new_filename)
+        
+        if old_filename:
+            delete_profile_image(old_filename)
+        
+        return updated_user
+
+    async def delete_profile_picture(self, user: User) -> User:
+        old_filename = user.image_file
+        
+        if old_filename is None:
+            raise NoProfilePictureError()
+        
+        updated_user = await self.repo.update_image(user, None)
+        
+        delete_profile_image(old_filename)
+        
+        return updated_user

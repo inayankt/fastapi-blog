@@ -3,17 +3,12 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth import oauth2_scheme
-from core.dependencies import get_db
-from core.exceptions import ForbiddenError
+from core.security import oauth2_scheme
+from db import get_db
 from modules.auth.service import AuthService
-from modules.posts.dependencies import get_post_service
-from modules.posts.models import Post
-from modules.posts.service import PostService
-from modules.users.dependencies import get_user_service
-from modules.users.models import User
-from modules.users.repository import UserRepository
-from modules.users.service import UserService
+from modules.auth.exceptions import NotCurrentUserError, NotPostOwnerError
+from modules.posts import Post, PostService, get_post_service
+from modules.users import User, UserRepository, UserService, get_user_service
 
 
 def get_auth_service(
@@ -36,7 +31,7 @@ async def is_post_owner(
 ) -> Post:
     post = await post_service.get_post(post_id)
     if post.user_id != current_user.id:
-        raise ForbiddenError("Not authorized to alter this post")
+        raise NotPostOwnerError()
     return post
 
 
@@ -47,5 +42,5 @@ async def is_valid_current_user(
 ) -> User:
     user = await user_service.get_user(user_id)
     if user.id != current_user.id:
-        raise ForbiddenError("Not authorized to alter this user")
+        raise NotCurrentUserError()
     return user

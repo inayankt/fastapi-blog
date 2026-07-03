@@ -3,8 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 
 from core.templates import templates
-from modules.posts.dependencies import get_post_service
-from modules.posts.service import PostService
+from modules.posts import PostService, get_post_service
 
 router = APIRouter()
 

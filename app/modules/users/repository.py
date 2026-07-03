@@ -42,19 +42,26 @@ class UserRepository:
         await self.db.refresh(new_user)
         return new_user
 
-    async def update(
+    async def update_details(
         self,
         user: User,
         username: str | None = None,
         email: str | None = None,
-        image_file: str | None = None,
     ) -> User:
         if username is not None:
             user.username = username
         if email is not None:
             user.email = email.lower()
-        if image_file is not None:
-            user.image_file = image_file
+        await self.db.commit()
+        await self.db.refresh(user)
+        return user
+    
+    async def update_image(
+        self,
+        user: User,
+        image_file: str | None = None,
+    ) -> User:
+        user.image_file = image_file
         await self.db.commit()
         await self.db.refresh(user)
         return user

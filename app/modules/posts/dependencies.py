@@ -3,10 +3,10 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.dependencies import get_db
+from db import get_db
 from modules.posts.repository import PostRepository
 from modules.posts.service import PostService
-from modules.users.repository import UserRepository
+from modules.users import UserRepository
 
 
 def get_post_service(

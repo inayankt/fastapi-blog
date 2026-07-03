@@ -1,11 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, UploadFile
 
-from modules.auth.dependencies import is_valid_current_user
-from modules.posts.dependencies import get_post_service
-from modules.posts.schemas import PostResponse
-from modules.posts.service import PostService
+from modules.auth import is_valid_current_user
+from modules.posts import (
+    PostResponse,
+    PostService,
+    get_post_service,
+)
 from modules.users.dependencies import get_user_service
 from modules.users.models import User
 from modules.users.schemas import UserCreate, UserPrivate, UserPublic, UserUpdate
@@ -54,3 +56,20 @@ async def delete_user(
     service: Annotated[UserService, Depends(get_user_service)],
 ):
     return await service.delete_user(user)
+
+
+@router.patch("/{user_id}/picture", response_model=UserPrivate)
+async def upload_profile_picture(
+    file: UploadFile,
+    user: Annotated[User, Depends(is_valid_current_user)],
+    service: Annotated[UserService, Depends(get_user_service)],
+):
+    return await service.upload_profile_picture(user, file)
+
+
+@router.delete("/{user_id}/picture", response_model=UserPrivate)
+async def delete_profile_picture(
+    user: Annotated[User, Depends(is_valid_current_user)],
+    service: Annotated[UserService, Depends(get_user_service)],
+):
+    return await service.delete_profile_picture(user)

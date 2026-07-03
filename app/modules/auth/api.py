@@ -6,8 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from modules.auth.dependencies import get_auth_service, get_current_user
 from modules.auth.schemas import Token
 from modules.auth.service import AuthService
-from modules.users.models import User
-from modules.users.schemas import UserPrivate
+from modules.users import User, UserPrivate
 
 router = APIRouter()
 
