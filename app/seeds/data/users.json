@@ -1,0 +1,37 @@
+[
+    {
+        "username": "CoreyMSchafer",
+        "email": "CoreyMSchafer@gmail.com",
+        "password": "TestPassword1!",
+        "image": "corey.png"
+    },
+    {
+        "username": "DefaultDude",
+        "email": "TestEmail2@test.com",
+        "password": "TestPassword2!"
+    },
+    {
+        "username": "WillowTheCat",
+        "email": "TestEmail3@test.com",
+        "password": "TestPassword3!",
+        "image": "willow.png"
+    },
+    {
+        "username": "FarmDogs",
+        "email": "TestEmail4@test.com",
+        "password": "TestPassword4!",
+        "image": "farmdogs.png"
+    },
+    {
+        "username": "PoppyTheCoder",
+        "email": "TestEmail5@test.com",
+        "password": "TestPassword5!",
+        "image": "poppy.png"
+    },
+    {
+        "username": "GoodBoyBronx",
+        "email": "TestEmail6@test.com",
+        "password": "TestPassword6!",
+        "image": "bronx.png"
+    }
+]
