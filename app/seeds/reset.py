@@ -2,10 +2,10 @@ import asyncio
 
 from sqlalchemy import delete
 
-from db import AsyncSessionLocal
 from core.storage import PROFILE_PICS_DIR
-from modules.users import User
+from db import AsyncSessionLocal
 from modules.posts import Post
+from modules.users import User
 
 
 async def reset() -> None:
@@ -26,4 +26,3 @@ async def reset() -> None:
 
 if __name__ == "__main__":
     asyncio.run(reset())
-    

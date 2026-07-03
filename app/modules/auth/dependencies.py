@@ -7,8 +7,13 @@ from core.security import oauth2_scheme
 from db import get_db
 from modules.auth.exceptions import NotCurrentUserError, NotPostOwnerError
 from modules.auth.service import AuthService
-from modules.posts import Post, PostService, get_post_service
-from modules.users import User, UserRepository, UserService, get_user_service
+from modules.posts.dependencies import get_post_service
+from modules.posts.models import Post
+from modules.posts.service import PostService
+from modules.users.dependencies import get_user_service
+from modules.users.models import User
+from modules.users.repository import UserRepository
+from modules.users.service import UserService
 
 
 def get_auth_service(

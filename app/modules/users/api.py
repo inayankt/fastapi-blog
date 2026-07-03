@@ -1,13 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile, status
+from fastapi import APIRouter, Depends, Query, UploadFile, status
 
-from modules.auth import is_valid_current_user
-from modules.posts import (
-    PostResponse,
-    PostService,
-    get_post_service,
-)
+from core.config import settings
+from modules.auth.dependencies import is_valid_current_user
+from modules.posts.schemas import PaginatedPostsResponse
 from modules.users.dependencies import get_user_service
 from modules.users.models import User
 from modules.users.schemas import UserCreate, UserPrivate, UserPublic, UserUpdate
@@ -32,13 +29,15 @@ async def get_user(
     return await service.get_user(user_id)
 
 
-@router.get("/{user_id}/posts", response_model=list[PostResponse])
+@router.get("/{user_id}/posts", response_model=PaginatedPostsResponse)
 async def get_user_posts(
     user_id: int,
-    service: Annotated[PostService, Depends(get_post_service)],
+    service: Annotated[UserService, Depends(get_user_service)],
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=100)] = settings.posts_per_page,
 ):
-    _, posts = await service.get_posts_by_user(user_id)
-    return posts
+    _, paginated_posts = await service.get_posts_by_user(user_id, skip, limit)
+    return paginated_posts
 
 
 @router.patch("/{user_id}", response_model=UserPrivate)

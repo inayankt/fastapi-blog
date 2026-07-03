@@ -2,8 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 
+from core.config import settings
 from core.templates import templates
-from modules.posts import PostService, get_post_service
+from modules.users.dependencies import get_user_service
+from modules.users.service import UserService
 
 router = APIRouter()
 
@@ -12,11 +14,19 @@ router = APIRouter()
 async def user_posts_page(
     request: Request,
     user_id: int,
-    service: Annotated[PostService, Depends(get_post_service)],
+    service: Annotated[UserService, Depends(get_user_service)],
 ):
-    user, posts = await service.get_posts_by_user(user_id)
+    user, paginated_posts = await service.get_posts_by_user(
+        user_id=user_id, skip=0, limit=settings.posts_per_page
+    )
     return templates.TemplateResponse(
         request,
         "user_posts.html",
-        {"posts": posts, "user": user, "title": f"{user.username}'s Posts"},
+        {
+            "posts": paginated_posts["posts"],
+            "user": user,
+            "title": f"{user.username}'s Posts",
+            "limit": settings.posts_per_page,
+            "has_more": paginated_posts["has_more"],
+        },
     )

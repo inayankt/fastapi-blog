@@ -1,22 +1,30 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 
-from modules.auth import get_current_user, is_post_owner
+from core.config import settings
+from modules.auth.dependencies import get_current_user, is_post_owner
 from modules.posts.dependencies import get_post_service
 from modules.posts.models import Post
-from modules.posts.schemas import PostCreate, PostResponse, PostUpdate
+from modules.posts.schemas import (
+    PaginatedPostsResponse,
+    PostCreate,
+    PostResponse,
+    PostUpdate,
+)
 from modules.posts.service import PostService
-from modules.users import User
+from modules.users.models import User
 
 router = APIRouter()
 
 
-@router.get("", response_model=list[PostResponse])
+@router.get("", response_model=PaginatedPostsResponse)
 async def get_posts(
     service: Annotated[PostService, Depends(get_post_service)],
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=100)] = settings.posts_per_page,
 ):
-    return await service.list_posts()
+    return await service.get_posts(skip, limit)
 
 
 @router.get("/{post_id}", response_model=PostResponse)

@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -9,11 +9,18 @@ class PostRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_all(self) -> list[Post]:
+    async def count_all(self) -> int:
+        result = await self.db.execute(select(func.count()).select_from(Post))
+        count = result.scalar() or 0
+        return count
+
+    async def get_all(self, skip: int, limit: int) -> list[Post]:
         result = await self.db.execute(
             select(Post)
             .options(selectinload(Post.author))
             .order_by(Post.date_posted.desc())
+            .offset(skip)
+            .limit(limit)
         )
         return list(result.scalars().all())
 
@@ -23,12 +30,21 @@ class PostRepository:
         )
         return result.scalars().first()
 
-    async def get_by_user_id(self, user_id: int) -> list[Post]:
+    async def count_by_user(self, user_id: int) -> int:
+        result = await self.db.execute(
+            select(func.count()).select_from(Post).where(Post.user_id == user_id)
+        )
+        count = result.scalar() or 0
+        return count
+
+    async def get_by_user_id(self, user_id: int, skip: int, limit: int) -> list[Post]:
         result = await self.db.execute(
             select(Post)
             .options(selectinload(Post.author))
             .where(Post.user_id == user_id)
             .order_by(Post.date_posted.desc())
+            .offset(skip)
+            .limit(limit)
         )
         return list(result.scalars().all())
 

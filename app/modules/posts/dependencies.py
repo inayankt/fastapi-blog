@@ -6,10 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_db
 from modules.posts.repository import PostRepository
 from modules.posts.service import PostService
-from modules.users import UserRepository
 
 
 def get_post_service(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> PostService:
-    return PostService(UserRepository(db), PostRepository(db))
+    return PostService(PostRepository(db))
