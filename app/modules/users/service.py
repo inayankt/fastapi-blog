@@ -2,16 +2,16 @@ from fastapi import UploadFile
 from PIL import UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
-from core.storage import delete_profile_image, process_profile_image
-from core.security import hash_password
 from core.config import settings
+from core.security import hash_password
+from core.storage import delete_profile_image, process_profile_image
 from modules.users.exceptions import (
     EmailAlreadyExistsError,
-    UsernameAlreadyExistsError,
-    UserNotFoundError,
     FileTooLargeError,
     InvalidImageError,
-    NoProfilePictureError
+    NoProfilePictureError,
+    UsernameAlreadyExistsError,
+    UserNotFoundError,
 )
 from modules.users.models import User
 from modules.users.repository import UserRepository
@@ -63,9 +63,9 @@ class UserService:
 
     async def delete_user(self, user: User) -> None:
         old_filename = user.image_file
-        
+
         await self.repo.delete(user)
-        
+
         if old_filename:
             delete_profile_image(old_filename)
 
@@ -73,29 +73,29 @@ class UserService:
         content = await file.read()
         if len(content) > settings.max_upload_size_bytes:
             raise FileTooLargeError()
-        
+
         try:
             new_filename = await run_in_threadpool(process_profile_image, content)
         except UnidentifiedImageError as err:
             raise InvalidImageError() from err
-        
+
         old_filename = user.image_file
-        
+
         updated_user = await self.repo.update_image(user, new_filename)
-        
+
         if old_filename:
             delete_profile_image(old_filename)
-        
+
         return updated_user
 
     async def delete_profile_picture(self, user: User) -> User:
         old_filename = user.image_file
-        
+
         if old_filename is None:
             raise NoProfilePictureError()
-        
+
         updated_user = await self.repo.update_image(user, None)
-        
+
         delete_profile_image(old_filename)
-        
+
         return updated_user

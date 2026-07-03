@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, status
 
 from modules.auth import is_valid_current_user
 from modules.posts import (

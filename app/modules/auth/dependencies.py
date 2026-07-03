@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.security import oauth2_scheme
 from db import get_db
-from modules.auth.service import AuthService
 from modules.auth.exceptions import NotCurrentUserError, NotPostOwnerError
+from modules.auth.service import AuthService
 from modules.posts import Post, PostService, get_post_service
 from modules.users import User, UserRepository, UserService, get_user_service
 

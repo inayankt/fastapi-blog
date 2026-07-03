@@ -1,4 +1,4 @@
-from core.exceptions import UnauthorizedError, ForbiddenError
+from core.exceptions import ForbiddenError, UnauthorizedError
 
 
 class InvalidCredentialsError(UnauthorizedError):

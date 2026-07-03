@@ -1,5 +1,5 @@
-from core.exceptions import ConflictError, NotFoundError, BadRequestError
 from core.config import settings
+from core.exceptions import BadRequestError, ConflictError, NotFoundError
 
 
 class UserNotFoundError(NotFoundError):
@@ -18,12 +18,17 @@ class EmailAlreadyExistsError(ConflictError):
 
 
 class FileTooLargeError(BadRequestError):
-    def __init__(self, detail: str = f"File too large, max allowed size is {settings.max_upload_size_bytes // (1024 * 1024)} MB"):
+    def __init__(
+        self,
+        detail: str = f"File too large, max allowed size is {settings.max_upload_size_bytes // (1024 * 1024)} MB",
+    ):
         super().__init__(detail)
 
 
 class InvalidImageError(BadRequestError):
-    def __init__(self, detail: str = "Invalid file, allowed formats: jpg, png, gif, webp"):
+    def __init__(
+        self, detail: str = "Invalid file, allowed formats: jpg, png, gif, webp"
+    ):
         super().__init__(detail)
 
 
