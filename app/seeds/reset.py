@@ -4,8 +4,9 @@ from sqlalchemy import delete
 
 from core.storage import PROFILE_PICS_DIR
 from db import AsyncSessionLocal
-from modules.posts import Post
-from modules.users import User
+from modules.auth.models import PasswordResetToken
+from modules.posts.models import Post
+from modules.users.models import User
 
 
 async def reset() -> None:
@@ -20,6 +21,7 @@ async def reset() -> None:
     async with AsyncSessionLocal() as db:
         await db.execute(delete(Post))
         await db.execute(delete(User))
+        await db.execute(delete(PasswordResetToken))
         await db.commit()
     print("Cleared existing data")
 

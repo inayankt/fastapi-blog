@@ -8,7 +8,7 @@ from sqlalchemy import select, update
 
 from db import AsyncSessionLocal, engine
 from main import app
-from modules.posts import Post
+from modules.posts.models import Post
 from seeds.reset import reset
 
 IMAGES_DIR = Path(__file__).parent / "images"

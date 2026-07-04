@@ -8,6 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db import Base
 
 if TYPE_CHECKING:
+    from modules.auth.models import PasswordResetToken
     from modules.posts.models import Post
 
 
@@ -23,8 +24,14 @@ class User(Base):
         nullable=True,
         default=None,
     )
+
     posts: Mapped[list[Post]] = relationship(
         back_populates="author",
+        cascade="all, delete-orphan",
+    )
+
+    reset_tokens: Mapped[list[PasswordResetToken]] = relationship(
+        back_populates="user",
         cascade="all, delete-orphan",
     )
 

@@ -1,4 +1,4 @@
-from core.exceptions import ForbiddenError, UnauthorizedError
+from core.exceptions import BadRequestError, ForbiddenError, UnauthorizedError
 
 
 class InvalidCredentialsError(UnauthorizedError):
@@ -18,4 +18,14 @@ class NotPostOwnerError(ForbiddenError):
 
 class NotCurrentUserError(ForbiddenError):
     def __init__(self, detail: str = "Not authorized to alter this user"):
+        super().__init__(detail)
+
+
+class InvalidResetTokenError(BadRequestError):
+    def __init__(self, detail: str = "Invalid or expired reset token"):
+        super().__init__(detail)
+
+
+class IncorrectCurrentPasswordError(BadRequestError):
+    def __init__(self, detail: str = "Current password is incorrect"):
         super().__init__(detail)

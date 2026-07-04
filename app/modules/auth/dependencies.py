@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.security import oauth2_scheme
 from db import get_db
 from modules.auth.exceptions import NotCurrentUserError, NotPostOwnerError
+from modules.auth.repository import AuthRepository
 from modules.auth.service import AuthService
 from modules.posts.dependencies import get_post_service
 from modules.posts.models import Post
@@ -19,7 +20,7 @@ from modules.users.service import UserService
 def get_auth_service(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> AuthService:
-    return AuthService(UserRepository(db))
+    return AuthService(AuthRepository(db), UserRepository(db))
 
 
 async def get_current_user(
