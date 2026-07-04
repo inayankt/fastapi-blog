@@ -49,7 +49,7 @@ async def handle_reset_password(
     )
 
 
-@router.post("/me/password", status_code=status.HTTP_200_OK)
+@router.patch("/me/password", status_code=status.HTTP_200_OK)
 async def handle_change_password(
     request_data: ChangePasswordRequest,
     current_user: Annotated[User, Depends(get_current_user)],

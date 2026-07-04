@@ -42,10 +42,10 @@ export async function getCurrentUser() {
   return fetchPromise;
 }
 
-export function logout() {
+export function logout(nextUrl = "/") {
   localStorage.removeItem("access_token");
   currentUser = null;
-  window.location.href = "/";
+  window.location.href = nextUrl;
 }
 
 export function getToken() {
