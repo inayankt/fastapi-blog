@@ -314,17 +314,17 @@
             getToken
         } from "/static/js/auth.js";
 
-        const token = getToken();
-        if (!token) {
-            window.location.href = "/login";
-            return;
-        }
-
         const createForm = document.getElementById("createPostForm");
 
         createForm.addEventListener("submit", async (event) => {
             // Stop default form submission - we'll handle it with JavaScript
             event.preventDefault();
+
+            const token = getToken();
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
 
             // Gather form values into a plain object {title: "...", content: "..."}
             const formData = new FormData(createForm);

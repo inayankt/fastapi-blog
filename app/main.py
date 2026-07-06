@@ -1,5 +1,3 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, Request, status
 from fastapi.exception_handlers import (
     http_exception_handler,
@@ -10,20 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from api.router import router as api_router
+from core.lifespan import lifespan
 from core.templates import templates
-from db import Base, engine
 from web.router import router as web_router
-
-
-@asynccontextmanager
-async def lifespan(_app: FastAPI):
-    # startup
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-    # shutdown
-    await engine.dispose()
-
 
 app = FastAPI(lifespan=lifespan)
 

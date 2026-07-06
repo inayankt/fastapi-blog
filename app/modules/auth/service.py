@@ -93,7 +93,7 @@ class AuthService:
         if not reset_token:
             raise InvalidResetTokenError()
 
-        if reset_token.expires_at.replace(tzinfo=UTC) < datetime.now(UTC):
+        if reset_token.expires_at < datetime.now(UTC):
             await self.auth_repo.delete(reset_token)
             raise InvalidResetTokenError()
 
