@@ -1,14 +1,20 @@
+from botocore.exceptions import ClientError
 from fastapi import UploadFile
 from PIL import UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
 from core.config import settings
 from core.security import hash_password
-from core.storage import delete_profile_image, process_profile_image
+from core.storage import (
+    delete_profile_image,
+    process_profile_image,
+    upload_profile_image,
+)
 from modules.posts.repository import PostRepository
 from modules.users.exceptions import (
     EmailAlreadyExistsError,
     FileTooLargeError,
+    ImageUploadError,
     InvalidImageError,
     NoProfilePictureError,
     UsernameAlreadyExistsError,
@@ -45,7 +51,9 @@ class UserService:
             payload.username, payload.email, hash_password(payload.password)
         )
 
-    async def get_posts_by_user(self, user_id: int, skip: int, limit: int):
+    async def get_posts_by_user(
+        self, user_id: int, skip: int, limit: int
+    ) -> tuple[User, dict]:
         user = await self.user_repo.get_by_id(user_id)
         if not user:
             raise UserNotFoundError()
@@ -89,7 +97,7 @@ class UserService:
         await self.user_repo.delete(user)
 
         if old_filename:
-            delete_profile_image(old_filename)
+            await delete_profile_image(old_filename)
 
     async def upload_profile_picture(self, user: User, file: UploadFile) -> User:
         content = await file.read()
@@ -97,16 +105,23 @@ class UserService:
             raise FileTooLargeError()
 
         try:
-            new_filename = await run_in_threadpool(process_profile_image, content)
+            processed_bytes, new_filename = await run_in_threadpool(
+                process_profile_image, content
+            )
         except UnidentifiedImageError as err:
             raise InvalidImageError() from err
+
+        try:
+            await upload_profile_image(processed_bytes, new_filename)
+        except ClientError as err:
+            raise ImageUploadError() from err
 
         old_filename = user.image_file
 
         updated_user = await self.user_repo.update_image(user, new_filename)
 
         if old_filename:
-            delete_profile_image(old_filename)
+            await delete_profile_image(old_filename)
 
         return updated_user
 
@@ -118,6 +133,6 @@ class UserService:
 
         updated_user = await self.user_repo.update_image(user, None)
 
-        delete_profile_image(old_filename)
+        await delete_profile_image(old_filename)
 
         return updated_user

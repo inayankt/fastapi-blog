@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from core.config import settings
 from db import Base
 
 if TYPE_CHECKING:
@@ -38,5 +39,5 @@ class User(Base):
     @property
     def image_path(self) -> str:
         if self.image_file:
-            return f"/media/profile_pics/{self.image_file}"
+            return f"https://{settings.s3_bucket_name}.s3.{settings.s3_region}.amazonaws.com/{settings.s3_bucket_prefix}/{self.image_file}"
         return "/static/profile_pics/default.jpg"

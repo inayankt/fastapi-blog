@@ -8,6 +8,8 @@ dependencies = [
     "aiosmtplib>=5.1.2",
     "aiosqlite>=0.22.1",
     "alembic>=1.18.5",
+    "boto3>=1.43.40",
+    "botocore>=1.43.40",
     "fastapi[standard]>=0.138.1",
     "pillow>=12.3.0",
     "psycopg[binary]>=3.3.4",
@@ -62,3 +64,5 @@ format = [
     "format-python",
     "lint-python"
 ]
+check-s3 = "python -m integrations.s3"
+reset-and-seed = "python -m seeds.seed"

@@ -1,13 +1,14 @@
 import uuid
 from io import BytesIO
-from pathlib import Path
 
 from PIL import Image, ImageOps
+from starlette.concurrency import run_in_threadpool
 
-PROFILE_PICS_DIR = Path("media/profile_pics")
+from core.config import settings
+from integrations.s3 import delete_from_s3, upload_to_s3
 
 
-def process_profile_image(content: bytes) -> str:
+def process_profile_image(content: bytes) -> tuple[bytes, str]:
     with Image.open(BytesIO(content)) as original:
         img = ImageOps.exif_transpose(original)
 
@@ -17,19 +18,21 @@ def process_profile_image(content: bytes) -> str:
             img = img.convert("RGB")
 
         filename = f"{uuid.uuid4().hex}.jpg"
-        filepath = PROFILE_PICS_DIR / filename
 
-        PROFILE_PICS_DIR.mkdir(parents=True, exist_ok=True)
+        output = BytesIO()
+        img.save(output, "JPEG", quality=85, optimize=True)
+        output.seek(0)
 
-        img.save(filepath, "JPEG", quality=85, optimize=True)
-
-    return filename
+    return output.read(), filename
 
 
-def delete_profile_image(filename: str | None) -> None:
+async def upload_profile_image(file_bytes: bytes, filename: str) -> None:
+    key = f"{settings.s3_bucket_prefix}/{filename}"
+    await run_in_threadpool(upload_to_s3, file_bytes, key)
+
+
+async def delete_profile_image(filename: str | None) -> None:
     if filename is None:
         return
-
-    filepath = PROFILE_PICS_DIR / filename
-    if filepath.exists():
-        filepath.unlink()
+    key = f"{settings.s3_bucket_prefix}/{filename}"
+    await run_in_threadpool(delete_from_s3, key)

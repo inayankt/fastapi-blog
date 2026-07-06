@@ -1,5 +1,10 @@
 from core.config import settings
-from core.exceptions import BadRequestError, ConflictError, NotFoundError
+from core.exceptions import (
+    BadRequestError,
+    ConflictError,
+    InternalServerError,
+    NotFoundError,
+)
 
 
 class UserNotFoundError(NotFoundError):
@@ -34,4 +39,9 @@ class InvalidImageError(BadRequestError):
 
 class NoProfilePictureError(BadRequestError):
     def __init__(self, detail: str = "Profile picture does not exist"):
+        super().__init__(detail)
+
+
+class ImageUploadError(InternalServerError):
+    def __init__(self, detail: str = "Image upload failed, please try again"):
         super().__init__(detail)

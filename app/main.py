@@ -15,7 +15,6 @@ from web.router import router as web_router
 app = FastAPI(lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/media", StaticFiles(directory="media"), name="media")
 
 
 app.include_router(web_router, include_in_schema=False)

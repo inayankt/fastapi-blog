@@ -29,3 +29,11 @@ class BadRequestError(HTTPException):
     def __init__(self, detail: str = "Bad Request"):
         self.detail = detail
         super().__init__(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)
+
+
+class InternalServerError(HTTPException):
+    def __init__(self, detail: str = "Internal Server Error"):
+        self.detail = detail
+        super().__init__(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=detail
+        )

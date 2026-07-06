@@ -9,7 +9,8 @@ from sqlalchemy import select, update
 from db import AsyncSessionLocal, engine
 from main import app
 from modules.posts.models import Post
-from seeds.reset import reset
+from seeds.reset_db import reset_database
+from seeds.reset_storage import reset_storage
 
 IMAGES_DIR = Path(__file__).parent / "images"
 
@@ -30,6 +31,8 @@ POST_44 = {
 
 
 async def update_post_dates() -> None:
+    print("\nUpdating post dates...")
+
     now = datetime.now(UTC)
 
     async with AsyncSessionLocal() as db:
@@ -56,18 +59,20 @@ async def update_post_dates() -> None:
             )
 
         await db.commit()
-    print("Updated post dates")
 
 
 async def seed() -> None:
     transport = httpx.ASGITransport(app=app)
 
+    await reset_database()
+    await asyncio.to_thread(reset_storage)
+
+    print("\nSeeding database...")
+
     async with httpx.AsyncClient(
         transport=transport,
         base_url="http://localhost",
     ) as client:
-        await reset()
-
         users: list[dict] = []
 
         print(f"\nCreating {len(USERS)} users...")
@@ -145,15 +150,14 @@ async def seed() -> None:
                 else f"\tCreated: '{title}'",
             )
 
-        print("\nUpdating post dates...")
         await update_post_dates()
 
     await engine.dispose()
 
-    print("\nDone!")
+    print("\nDone.")
     print(f"\t{len(USERS)} users")
     print(f"\t{len(POSTS) + 1} posts")
-    print("\tProfile pictures saved locally")
+    print("\tProfile pictures saved on AWS S3")
 
 
 if __name__ == "__main__":

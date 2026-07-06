@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from fastapi import BackgroundTasks
 
 from core.config import settings
-from core.mail import send_password_reset_email
 from core.security import (
     create_access_token,
     generate_reset_token,
@@ -12,6 +11,7 @@ from core.security import (
     verify_access_token,
     verify_password,
 )
+from integrations.email import send_password_reset_email
 from modules.auth.exceptions import (
     IncorrectCurrentPasswordError,
     InvalidCredentialsError,
