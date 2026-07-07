@@ -1,12 +1,11 @@
-# user uploaded files
+# local development files
 media
-
-# local database
 *.db
 
 # python
 __pycache__
 .ruff_cache
+.pytest_cache
 
 # virtual environments
 .venv

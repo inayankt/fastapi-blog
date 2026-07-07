@@ -1,13 +1,21 @@
 # python
 app/__pycache__
 app/.ruff_cache
+app/.pytest_cache
 
 # virtual environments
 app/.venv
 
-# text files
-app/snippets.txt
-
 # environment files
 app/.env
 app/.env.*
+
+# documentation
+app/*.md
+
+# local development files
+app/media
+app/*.db
+
+# test files
+app/tests

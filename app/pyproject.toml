@@ -22,7 +22,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "djlint>=1.40.0",
+    "moto[s3]>=5.2.2",
     "poethepoet>=0.47.0",
+    "pytest>=9.1.1",
     "ruff>=0.15.20",
 ]
 

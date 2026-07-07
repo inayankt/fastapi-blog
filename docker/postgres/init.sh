@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" <<EOSQL
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${BLOGUSER_USERNAME}') THEN
+    CREATE ROLE ${BLOGUSER_USERNAME} WITH LOGIN PASSWORD '${BLOGUSER_PASSWORD}';
+  END IF;
+
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'testuser') THEN
+    CREATE ROLE testuser WITH LOGIN PASSWORD 'testpass';
+  END IF;
+END
+\$\$;
+
+SELECT 'CREATE DATABASE blog_dev OWNER ${BLOGUSER_USERNAME}'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'blog_dev')\gexec
+
+SELECT 'CREATE DATABASE blog_test OWNER testuser'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'blog_test')\gexec
+EOSQL

@@ -10,6 +10,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    command: sleep infinity
 
   db:
     image: postgres:18-alpine
@@ -19,6 +20,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+      - ./docker/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
     env_file:
       - .env.db
     healthcheck:
