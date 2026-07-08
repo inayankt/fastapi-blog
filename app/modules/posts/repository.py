@@ -14,7 +14,7 @@ class PostRepository:
         count = result.scalar() or 0
         return count
 
-    async def get_all(self, skip: int, limit: int) -> list[Post]:
+    async def get_all(self, skip: int = 0, limit: int = 100) -> list[Post]:
         result = await self.db.execute(
             select(Post)
             .options(selectinload(Post.author))
@@ -37,7 +37,7 @@ class PostRepository:
         count = result.scalar() or 0
         return count
 
-    async def get_by_user_id(self, user_id: int, skip: int, limit: int) -> list[Post]:
+    async def get_by_user_id(self, user_id: int, skip: int = 0, limit: int = 100) -> list[Post]:
         result = await self.db.execute(
             select(Post)
             .options(selectinload(Post.author))

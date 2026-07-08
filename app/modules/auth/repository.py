@@ -16,6 +16,7 @@ class AuthRepository:
         )
         self.db.add(reset_token)
         await self.db.commit()
+        return reset_token
 
     async def get_by_token_hash(self, token_hash) -> PasswordResetToken:
         result = await self.db.execute(
