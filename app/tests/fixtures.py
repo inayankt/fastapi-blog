@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.pool import NullPool
 import pytest
 
+from core.config import settings
 from db import Base, get_db
 from main import app
 
@@ -20,7 +21,7 @@ def anyio_backend():
 @pytest.fixture(scope="session")
 def test_engine():
     engine = create_async_engine(
-        os.environ["DATABASE_URL"],
+        settings.database_url,
         poolclass=NullPool,
     )
     return engine
@@ -67,7 +68,7 @@ async def db_session(
 def mocked_s3():
     with mock_aws():
         s3 = boto3.client("s3", region_name="us-east-1")
-        s3.create_bucket(Bucket=os.environ["S3_BUCKET_NAME"])
+        s3.create_bucket(Bucket=settings.s3_bucket_name)
         yield s3
 
 

@@ -27,6 +27,45 @@ async def test_get_post_not_found(client: AsyncClient):
 
 
 @pytest.mark.anyio
+async def test_get_post_success(client: AsyncClient):
+    await create_test_user(client)
+    token = await login_user(client)
+    headers = auth_header(token)
+
+    create_response = await client.post(
+        "/api/posts",
+        json={"title": "Test Post", "content": "Test content"},
+        headers=headers,
+    )
+    assert create_response.status_code == 201
+    post_id = create_response.json()["id"]
+
+    response = await client.get(f"/api/posts/{post_id}")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["id"] == post_id
+    assert data["title"] == "Test Post"
+    assert data["content"] == "Test content"
+    assert data["author"]["username"] == "testuser"
+
+
+@pytest.mark.anyio
+async def test_create_post_validation_error(client: AsyncClient):
+    await create_test_user(client)
+    token = await login_user(client)
+    headers = auth_header(token)
+
+    response = await client.post(
+        "/api/posts",
+        json={"title": ""},
+        headers=headers,
+    )
+    assert response.status_code == 422
+    assert "content" in response.text
+
+
+@pytest.mark.anyio
 async def test_create_post_success(client: AsyncClient):
     user = await create_test_user(client)
     token = await login_user(client)
@@ -117,6 +156,54 @@ async def test_update_post_wrong_user(client: AsyncClient):
     )
     assert response.status_code == 403
     assert response.json()["detail"] == "Not authorized to alter this post"
+
+
+@pytest.mark.anyio
+async def test_delete_post_success(client: AsyncClient):
+    await create_test_user(client)
+    token = await login_user(client)
+    headers = auth_header(token)
+
+    create_response = await client.post(
+        "/api/posts",
+        json={"title": "Delete Me", "content": "Please delete this post."},
+        headers=headers,
+    )
+    assert create_response.status_code == 201
+    post_id = create_response.json()["id"]
+
+    delete_response = await client.delete(
+        f"/api/posts/{post_id}",
+        headers=headers,
+    )
+    assert delete_response.status_code == 204
+
+    get_response = await client.get(f"/api/posts/{post_id}")
+    assert get_response.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_delete_post_wrong_user(client: AsyncClient):
+    await create_test_user(client, username="user1", email="user1@test.com")
+    token1 = await login_user(client, email="user1@test.com")
+
+    create_response = await client.post(
+        "/api/posts",
+        json={"title": "User 1 Post", "content": "Owned by user 1."},
+        headers=auth_header(token1),
+    )
+    assert create_response.status_code == 201
+    post_id = create_response.json()["id"]
+
+    await create_test_user(client, username="user2", email="user2@test.com")
+    token2 = await login_user(client, email="user2@test.com")
+
+    delete_response = await client.delete(
+        f"/api/posts/{post_id}",
+        headers=auth_header(token2),
+    )
+    assert delete_response.status_code == 403
+    assert delete_response.json()["detail"] == "Not authorized to alter this post"
 
 
 @pytest.mark.anyio
