@@ -40,15 +40,15 @@ class UserService:
             raise UserNotFoundError()
         return user
 
-    async def create_user(self, payload: UserCreate) -> User:
-        if await self.user_repo.get_by_username(payload.username):
+    async def create_user(self, username: str, email: str, password: str) -> User:
+        if await self.user_repo.get_by_username(username):
             raise UsernameAlreadyExistsError()
 
-        if await self.user_repo.get_by_email(payload.email):
+        if await self.user_repo.get_by_email(email):
             raise EmailAlreadyExistsError()
 
         return await self.user_repo.create(
-            payload.username, payload.email, hash_password(payload.password)
+            username, email, hash_password(password)
         )
 
     async def get_posts_by_user(
@@ -69,25 +69,25 @@ class UserService:
             "has_more": has_more,
         }
 
-    async def update_user(self, user: User, payload: UserUpdate) -> User:
+    async def update_user(self, user: User, username: str | None, email: str | None) -> User:
         if (
-            payload.username is not None
-            and payload.username.lower() != user.username.lower()
-            and await self.user_repo.get_by_username(payload.username)
+            username is not None
+            and username.lower() != user.username.lower()
+            and await self.user_repo.get_by_username(username)
         ):
             raise UsernameAlreadyExistsError()
 
         if (
-            payload.email is not None
-            and payload.email.lower() != user.email.lower()
-            and await self.user_repo.get_by_email(payload.email)
+            email is not None
+            and email.lower() != user.email.lower()
+            and await self.user_repo.get_by_email(email)
         ):
             raise EmailAlreadyExistsError()
 
         updated_user = await self.user_repo.update_details(
             user=user,
-            username=payload.username,
-            email=payload.email,
+            username=username,
+            email=email,
         )
         return updated_user
 

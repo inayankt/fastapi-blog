@@ -33,10 +33,10 @@ async def get_me(current_user: Annotated[User, Depends(get_current_user)]):
 @router.post("/forgot-password", status_code=status.HTTP_202_ACCEPTED)
 async def handle_forgot_password(
     request_data: ForgotPasswordRequest,
-    background_tasks: BackgroundTasks,
+    bg_tasks: BackgroundTasks,
     service: Annotated[AuthService, Depends(get_auth_service)],
 ):
-    return await service.handle_forgot_password(request_data.email, background_tasks)
+    return await service.handle_forgot_password(request_data.email, bg_tasks)
 
 
 @router.post("/reset-password", status_code=status.HTTP_200_OK)

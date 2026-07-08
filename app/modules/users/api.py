@@ -18,7 +18,11 @@ async def create_user(
     payload: UserCreate,
     service: Annotated[UserService, Depends(get_user_service)],
 ):
-    return await service.create_user(payload)
+    return await service.create_user(
+        username=payload.username,
+        email=payload.email,
+        password=payload.password,
+    )
 
 
 @router.get("/{user_id}", response_model=UserPublic)
@@ -43,10 +47,14 @@ async def get_user_posts(
 @router.patch("/{user_id}", response_model=UserPrivate)
 async def update_user(
     payload: UserUpdate,
-    user: Annotated[User, Depends(is_valid_current_user)],
+    current_user: Annotated[User, Depends(is_valid_current_user)],
     service: Annotated[UserService, Depends(get_user_service)],
 ):
-    return await service.update_user(user, payload)
+    return await service.update_user(
+        user=current_user,
+        username=payload.username,
+        email=payload.email,
+    )
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)

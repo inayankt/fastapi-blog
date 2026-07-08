@@ -41,7 +41,7 @@ async def create_post(
     current_user: Annotated[User, Depends(get_current_user)],
     service: Annotated[PostService, Depends(get_post_service)],
 ):
-    return await service.create_post(current_user, payload)
+    return await service.create_post(user=current_user, title=payload.title, content=payload.content)
 
 
 @router.patch("/{post_id}", response_model=PostResponse)
@@ -50,7 +50,7 @@ async def update_post(
     post: Annotated[Post, Depends(is_post_owner)],
     service: Annotated[PostService, Depends(get_post_service)],
 ):
-    return await service.update_post(post, payload)
+    return await service.update_post(post=post, title=payload.title, content=payload.content)
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)

@@ -57,7 +57,7 @@ class AuthService:
         return user
 
     async def handle_forgot_password(
-        self, email: str, background_tasks: BackgroundTasks
+        self, email: str, bg_tasks: BackgroundTasks
     ) -> dict:
         user = await self.user_repo.get_by_email(email)
 
@@ -74,7 +74,7 @@ class AuthService:
                 user_id=user.id, token_hash=token_hash, expires_at=expires_at
             )
 
-            background_tasks.add_task(
+            bg_tasks.add_task(
                 send_password_reset_email,
                 to_email=user.email,
                 username=user.username,

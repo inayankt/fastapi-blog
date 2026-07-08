@@ -1,7 +1,6 @@
-import os
-
 import pytest
 
+from core.config import settings
 from modules.users.models import User
 from modules.users.repository import UserRepository
 
@@ -99,7 +98,7 @@ async def test_update_image(repo, users):
 
     assert updated.id == users[0].id
     assert updated.image_file == "avatar.jpg"
-    assert updated.image_path == f"https://{os.environ["S3_BUCKET_NAME"]}.s3.{os.environ["S3_REGION"]}.amazonaws.com/profile_pics/avatar.jpg"
+    assert updated.image_path == f"https://{settings.s3_bucket_name}.s3.{settings.s3_region}.amazonaws.com/{settings.s3_bucket_prefix}/avatar.jpg"
     
     updated = await repo.update_image(user=users[0])
     
