@@ -6,11 +6,11 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - ./:/workspace
+      - uv-venv:/workspace/app/.venv
     depends_on:
       db:
         condition: service_healthy
-    command: sleep infinity
 
   db:
     image: postgres:18-alpine
@@ -45,5 +45,6 @@ services:
         condition: service_healthy
 
 volumes:
+  uv-venv:
   postgres_data:
   pgadmin_data:

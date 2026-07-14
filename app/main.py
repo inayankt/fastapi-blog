@@ -1,15 +1,20 @@
-from fastapi import FastAPI, Request, status
+from typing import Annotated
+
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
 from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from api.router import router as api_router
 from core.lifespan import lifespan
 from core.templates import templates
+from db import get_db
 from web.router import router as web_router
 
 app = FastAPI(lifespan=lifespan)
@@ -19,6 +24,19 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(web_router, include_in_schema=False)
 app.include_router(api_router, prefix="/api")
+
+
+# Health Check endpoint
+@app.get("/health")
+async def health_check(db: Annotated[AsyncSession, Depends(get_db)]):
+    try:
+        await db.execute(text("SELECT 1"))
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database unavailable",
+        ) from exc
+    return {"status": "healthy"}
 
 
 # StarletteHTTPException handler

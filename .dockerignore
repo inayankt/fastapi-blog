@@ -1,21 +1,46 @@
-# python
-app/__pycache__
-app/.ruff_cache
-app/.pytest_cache
+# VCS metadata
+.git
+.gitignore
+.github/
 
-# virtual environments
-app/.venv
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
-# environment files
-app/.env
-app/.env.*
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+app/.venv/
 
-# documentation
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local databases and uploaded content
+*.db
+*.sqlite
+*.sqlite3
+media/
+
+# Tests and local docs
+app/tests/
 app/*.md
 
-# local development files
-app/media
-app/*.db
+# IDE and OS metadata
+.vscode/
+.idea/
+.DS_Store
 
-# test files
-app/tests
+# Logs and runtime artifacts
+*.log
+*.tmp

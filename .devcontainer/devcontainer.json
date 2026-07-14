@@ -1,0 +1,55 @@
+{
+  "name": "FastAPI Blog",
+  "dockerComposeFile": "../docker-compose.yaml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "tamasfe.even-better-toml",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "charliermarsh.ruff",
+        "samuelcolvin.jinjahtml",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "files.associations": {
+          "*.html": "jinja-html"
+        },
+        "python.terminal.activateEnvironment": false,
+        "python.defaultInterpreterPath": "/workspace/app/.venv/bin/python",
+        "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.autoImportCompletions": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "[jinja-html]": {
+          "editor.defaultFormatter": "samuelcolvin.jinjahtml"
+        },
+        "[css]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+      }
+    }
+  }
+}

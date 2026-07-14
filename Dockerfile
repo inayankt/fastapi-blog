@@ -1,11 +1,11 @@
 FROM python:3.13-slim
 
-WORKDIR /app
+WORKDIR /workspace/app
 
+RUN apt-get update && apt-get install -y git
 RUN pip install --no-cache-dir uv
 
 COPY app/pyproject.toml app/uv.lock ./
-
 RUN uv sync
 
 COPY ./app .
