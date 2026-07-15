@@ -19,7 +19,6 @@
         "files.associations": {
           "*.html": "jinja-html"
         },
-        "python.terminal.activateEnvironment": false,
         "python.defaultInterpreterPath": "/workspace/app/.venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.autoImportCompletions": true,

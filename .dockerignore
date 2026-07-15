@@ -1,46 +1,42 @@
 # VCS metadata
-.git
-.gitignore
-.github/
+**/.git
+**/.gitignore
+**/.github/
 
 # Python bytecode and caches
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.pytest_cache/
-.ruff_cache/
-.mypy_cache/
-.coverage
-htmlcov/
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.coverage
+**/htmlcov/
 
 # Virtual environments
-.venv/
-venv/
-env/
-ENV/
-app/.venv/
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
 
 # Environment files
-.env
-.env.*
-!.env.example
+**/.env
+**/.env.*
 
-# Local databases and uploaded content
-*.db
-*.sqlite
-*.sqlite3
-media/
-
-# Tests and local docs
+# Local files
+**/*.db
+**/*.sqlite*
+**/*.md
+app/media/
 app/tests/
-app/*.md
+app/seeds/
 
 # IDE and OS metadata
-.vscode/
-.idea/
-.DS_Store
+**/.vscode/
+**/.idea/
+**/.DS_Store
 
 # Logs and runtime artifacts
-*.log
-*.tmp
+**/*.log
+**/*.tmp

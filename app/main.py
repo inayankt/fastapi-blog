@@ -13,6 +13,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from api.router import router as api_router
 from core.lifespan import lifespan
+from core.middlewares import add_security_headers
 from core.templates import templates
 from db import get_db
 from web.router import router as web_router
@@ -21,6 +22,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+app.middleware("http")(add_security_headers)
 
 app.include_router(web_router, include_in_schema=False)
 app.include_router(api_router, prefix="/api")
